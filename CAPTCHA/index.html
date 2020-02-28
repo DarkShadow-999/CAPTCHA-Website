@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2/webcomponents-bundle.js"></script>
+    <script src="https://unpkg.com/tone"></script>
+    <script src="https://unpkg.com/@tonejs/ui"></script>
+    <script src="mousestop.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#myModal1').modal('show');
+
+
+        });
+    </script>
+    <style>
+        body {
+            color:#eee;
+            font-size:26px;
+            width:100vw;
+            height: 100vh;
+            margin: 0;
+            font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+            background: linear-gradient(45deg,#00FFF3, #00FF00, #0000FF , #E400FF,#FF0100, #FFF101);
+            background-size: 600% 100%;
+            animation: gradient 16s linear infinite;
+            animation-direction: alternate;
+        }
+        @keyframes gradient {
+            0% {
+                background-position: 0
+            }
+            100% {
+                background-position: 100%
+            }
+        }
+        .html5::-webkit-progress-value{
+            /* Gradient background with Stripes */
+            background-image:
+                    -webkit-linear-gradient( 135deg,
+                    transparent,
+                    transparent 33%,
+                    rgba(0,0,0,.1) 33%,
+                    rgba(0,0,0,.1) 66%,
+                    transparent 66%),
+                    -webkit-linear-gradient( top,
+                    rgba(255, 255, 255, .25),
+                    rgba(0,0,0,.2)),
+                    -webkit-linear-gradient( left, #09c, #f44);
+        }
+        progress:not(value) {
+            /* Add your styles here. As part of this walkthrough we will focus only on determinate progress bars. */
+        }
+
+        /* Styling the determinate progress element */
+
+        progress[value] {
+            /* Get rid of the default appearance */
+            appearance: none;
+
+            /* This unfortunately leaves a trail of border behind in Firefox and Opera. We can remove that by setting the border to none. */
+            border: none;
+
+            /* Add dimensions */
+            width: 100%; height: 20px;
+
+            /* Although firefox doesn't provide any additional pseudo class to style the progress element container, any style applied here works on the container. */
+            background-color: whiteSmoke;
+            border-radius: 3px;
+            box-shadow: 0 2px 3px rgba(0,0,0,.5) inset;
+
+            /* Of all IE, only IE10 supports progress element that too partially. It only allows to change the background-color of the progress value using the 'color' attribute. */
+            color: royalblue;
+
+            position: relative;
+            margin: 0 0 1.5em;
+        }
+
+        /*
+        Webkit browsers provide two pseudo classes that can be use to style HTML5 progress element.
+        -webkit-progress-bar -> To style the progress element container
+        -webkit-progress-value -> To style the progress element value.
+        */
+
+        progress[value]::-webkit-progress-bar {
+            background-color: whiteSmoke;
+            border-radius: 3px;
+            box-shadow: 0 2px 3px rgba(0,0,0,.5) inset;
+        }
+
+        progress[value]::-webkit-progress-value {
+            position: relative;
+
+            background-size: 35px 20px, 100% 100%, 100% 100%;
+            border-radius:3px;
+
+            /* Let's animate this */
+            animation: animate-stripes 5s linear infinite;
+        }
+
+        @keyframes animate-stripes { 100% { background-position: -100px 0; } }
+
+        /* Let's spice up things little bit by using pseudo elements. */
+
+        progress[value]::-webkit-progress-value:after {
+            /* Only webkit/blink browsers understand pseudo elements on pseudo classes. A rare phenomenon! */
+            content: '';
+            position: absolute;
+
+            width:5px; height:5px;
+            top:7px; right:7px;
+
+            background-color: white;
+            border-radius: 100%;
+        }
+
+        /* Firefox provides a single pseudo class to style the progress element value and not for container. -moz-progress-bar */
+
+        progress[value]::-moz-progress-bar {
+            /* Gradient background with Stripes */
+            background-image:
+                    -moz-linear-gradient( 135deg,
+                    transparent,
+                    transparent 33%,
+                    rgba(0,0,0,.1) 33%,
+                    rgba(0,0,0,.1) 66%,
+                    transparent 66%),
+                    -moz-linear-gradient( top,
+                    rgba(255, 255, 255, .25),
+                    rgba(0,0,0,.2)),
+                    -moz-linear-gradient( left, #09c, #f44);
+                    -moz-transition: all, 0.5s;
+                    -o-transition: all, 0.5s;
+                    -webkit-transition: all, 0.5s;
+
+            background-size: 35px 20px, 100% 100%, 100% 100%;
+            border-radius:3px;
+
+            /* Firefox doesn't support CSS3 keyframe animations on progress element. Hence, we did not include animate-stripes in this code block */
+        }
+
+        /* Fallback technique styles */
+        .progress-bar {
+            background-color: whiteSmoke;
+            border-radius: 3px;
+            box-shadow: 0 2px 3px rgba(0,0,0,.5) inset;
+
+            /* Dimensions should be similar to the parent progress element. */
+            width: 100%; height:20px;
+        }
+
+        .progress-bar span {
+            background-color: royalblue;
+            border-radius: 3px;
+
+            display: block;
+            text-indent: -9999px;
+        }
+
+
+    </style>
+</head>
+<body>
+<div>
+<h1 style="font-family: 'Agency FB',serif;font-size:50px; position: absolute; top: 42%; left: 44%; ">CAPTCHA</h1>
+<h2 style=" position: absolute; top: 55%; left: 43%; "></h2>
+<progress id="prog" style="position: absolute; top: 55%; left: 35%; width: 30%" max="100" value="0" class="html5"></progress>
+</div>
+<!--Instructions-->
+<div id="myModal1" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" style="text-align: center; color: black; font-size: 30px">Instructions</h4>
+            </div>
+            <div class="modal-body">
+                <p style="text-align: center; color: black; font-size: 20px">Click Outside the modal to Start the CAPTCHA process. For CAPTCHA start moving the mouse, which will generate a tone, now move the mouse until the tone continues and stop the mouse as the tone stops. Do this a few times till you are verified.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!--Try Again-->
+<div id="myModal2" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <p style="text-align: center; color: black; font-size: 35px">Try Again</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--Keep Going-->
+<div id="myModal3" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <p style="text-align: center; color: black; font-size: 35px">Nice! Keep Going.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--CAPTCHA is Complete-->
+<div id="myModal4" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <p style="text-align: center; color: black; font-size: 35px">CAPTCHA is Complete.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div id="myModal5" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+
+            <div class="modal-body">
+                <p style="text-align: center; color: black; font-size: 35px">Out of Focus.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+
+
+
+    var distortion = new Tone.Distortion(0.6);
+    var tremolo = new Tone.Tremolo().start();
+
+    var polySynth = new Tone.PolySynth(4, Tone.Synth).chain(distortion, tremolo, Tone.Master);
+
+    const tme = Math.floor(Math.random() * 5) + 1;
+
+    var t0;
+    var t1;
+
+    var bdy = $('body');
+    //Try Again
+    var mod2 = $('#myModal2');
+    //Nice Keep Going
+    var mod3 = $('#myModal3');
+    //Out of Focus
+    var mod5 = $('#myModal5');
+    //Coordinates
+    var coord = $('h2');
+    //Text-To-Speech
+    window.speechSynthesis.cancel();
+    var msg = new SpeechSynthesisUtterance('Instructions. Click Outside the modal to Start the CAPTCHA process. For CAPTCHA start moving the mouse, which will generate a tone, now move the mouse until the tone continues and stop the mouse as the tone stops. Do this a few times till you are verified.');
+    window.speechSynthesis.speak(msg);
+
+    $('#myModal1').on('hide.bs.modal', function () {
+
+
+
+            window.speechSynthesis.cancel();
+            function mou(){
+            bdy.mousemove(function( event ) {
+                var pageCoords = "( " + event.pageX + ", " + event.pageY + " )";
+                coord.first().text( pageCoords );
+            });
+            bdy.one('mousemove', () => {
+
+                polySynth.triggerAttackRelease(['C4', '8n'],tme);
+                t1 = new Date().getTime() +tme*1000;
+            });
+            bdy.mousestop(function() {
+                t0 = new Date().getTime();
+                bdy.one('mousemove', () => {
+                    polySynth.triggerAttackRelease(['C4', '8n'],tme);
+                    t1 = new Date().getTime() +tme*1000;
+
+                });
+                console.log(t0-t1);
+                var t3 = t0-t1;
+
+                if(t3>=700 && t3<=900)
+                {
+
+                    document.getElementById("prog").value +=20;
+                    if(document.getElementById('prog').value ===100)
+                    {
+
+                        $('#myModal4').modal('show');
+                        bdy.off('mousemove')
+                        .unbind('mousestop');
+                        coord.hide();
+                        // alert("captcha ")
+                        var msg4 = new SpeechSynthesisUtterance('CAPTCHA is Complete.');
+                        window.speechSynthesis.speak(msg4);
+                    }
+                    else {
+                        mod3.modal('show');
+                        bdy.off('mousemove')
+                            .unbind('mousestop');
+                        // alert("Nice! Keep Going")
+
+                        mod3.one('shown.bs.modal', function (){
+                            var msg2 = new SpeechSynthesisUtterance('Nice! Keep Going.');
+                            window.speechSynthesis.speak(msg2);
+                        });
+
+                        mod3.one('hide.bs.modal', function (){
+                            mou();
+                        });
+                        window.speechSynthesis.cancel();
+                    }
+                }
+                else
+                {
+                    mod2.modal('show');
+                    bdy.off('mousemove')
+                    .unbind('mousestop');
+                    // alert("Try again")
+
+                    mod2.one('shown.bs.modal', function (){
+                        var msg3 = new SpeechSynthesisUtterance('Try Again.');
+                        window.speechSynthesis.speak(msg3);
+                    });
+
+                    mod2.one('hide.bs.modal', function (){
+                        mou();
+                    });
+                    window.speechSynthesis.cancel();
+
+                }
+
+            });}
+
+
+            mou();
+
+
+        //stop sound when mouse stop
+        // $('body').mousestop(function() {
+        //     polySynth.triggerRelease(['C4', '8n'])
+        // });
+
+        //stop sound when mouse goes out of window
+        document.querySelector("body").addEventListener('mouseleave', () => {
+            mod5.modal('show');
+            bdy.off('mousemove')
+                .unbind('mousestop');
+            // alert("Out of Focus")
+
+            mod5.one('shown.bs.modal', function (){
+                polySynth.triggerRelease(['C4', '8n'],tme);
+                var msg4 = new SpeechSynthesisUtterance('Out of Focus');
+                window.speechSynthesis.speak(msg4);
+            });
+
+            mod5.one('hide.bs.modal', function (){
+                mou();
+            });
+            window.speechSynthesis.cancel();
+
+        });
+
+    });
+
+
+</script>
+</body>
+</html>
